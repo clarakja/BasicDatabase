@@ -1,8 +1,9 @@
 import streamlit as st
 import sqlite3
 
-# 데이터베이스 연결
-conn = sqlite3.connect(":memory:")  # 메모리 기반 SQLite DB
+# 데이터베이스 파일로 연결 (파일 기반으로 유지)
+db_file = "database.db"
+conn = sqlite3.connect(db_file)  # 파일 기반 SQLite DB
 cur = conn.cursor()
 
 # Streamlit 앱 제목
@@ -27,7 +28,7 @@ if menu == "Table Creation":
         if table_name and columns:
             try:
                 # SQL 명령어 실행
-                create_table_query = f"CREATE TABLE {table_name} ({columns});"
+                create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns});"
                 cur.execute(create_table_query)
                 conn.commit()
                 st.success(f"Table '{table_name}' created successfully!")
@@ -51,12 +52,6 @@ if menu == "Table Creation":
 # 데이터 삽입 기능
 elif menu == "Insert Data":
     st.header("Insert Data into a Table")
-    
-    # 생성된 테이블 확인
-    st.subheader("Created Tables")
-    cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    tables = cur.fetchall()
-    
     table_name = st.text_input("Enter the table name for insertion:")
 
     if table_name:
