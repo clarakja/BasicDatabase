@@ -51,6 +51,12 @@ if menu == "Table Creation":
 # 데이터 삽입 기능
 elif menu == "Insert Data":
     st.header("Insert Data into a Table")
+    
+    # 생성된 테이블 확인
+    st.subheader("Created Tables")
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cur.fetchall()
+    
     table_name = st.text_input("Enter the table name for insertion:")
 
     if table_name:
